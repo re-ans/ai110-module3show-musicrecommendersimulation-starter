@@ -17,18 +17,30 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+This recommender system works by implementing a **content-based filtering** approach. It matches songs from a catalog to a user's taste profile based on the songs' intrinsic characteristics. The core idea is to score every song against the user's preferences and then rank them to find the best matches.
 
-Some prompts to answer:
+- **What features does each `Song` use in your system?**
+  - Our system uses a mix of categorical and numerical features to define each song:
+    - **Categorical:** `genre` (e.g., pop, rock, lofi) and `mood` (e.g., happy, chill, intense).
+    - **Numerical:** `energy`, `valence` (musical positiveness), and `danceability`. These are measured on a scale from 0.0 to 1.0.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+- **What information does your `UserProfile` store?**
+  - The `UserProfile` stores the user's ideal musical preferences. This includes their preferred `genre` and `mood`, as well as target values for the numerical features (`energy`, `valence`, and `danceability`). For example, a user might prefer `lofi` music with a `chill` mood and `low energy`.
 
-You can include a simple diagram or bullet list if helpful.
+- **How does your `Recommender` compute a score for each song?**
+  - The recommender calculates a total "match score" for each song using a weighted formula:
+    1.  **Categorical Match:** Songs get a full score for matching the user's preferred `genre` and `mood`, and zero otherwise.
+    2.  **Numerical Match:** For features like `energy`, the score is calculated based on *closeness* to the user's preference using the formula: `Score = 1 / (1 + |User Preference - Song Value|)`. This rewards songs that are closer to the user's target value.
+    3.  **Weighted Total:** The final score is a weighted sum of the individual feature scores. `genre` and `mood` are weighted most heavily, as they are the strongest indicators of taste.
+        - `genre_weight`: 40
+        - `mood_weight`: 30
+        - `energy_weight`, `valence_weight`, `danceability_weight`: 10 each
 
+- **How do you choose which songs to recommend?**
+  - After scoring every song in the catalog against the user's profile, the system applies a **Ranking Rule**. It sorts all the songs in descending order based on their final score. The top-scoring songs are then presented to the user as the final recommendation list.
+
+- **Diagram of workflow:**
+  ![Workflow Diagram](music_diagram.png)
 ---
 
 ## Getting Started

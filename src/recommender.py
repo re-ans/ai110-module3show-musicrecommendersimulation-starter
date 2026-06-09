@@ -1,12 +1,8 @@
-from typing import List, Dict, Tuple, Optional
+import csv
 from dataclasses import dataclass
 
 @dataclass
 class Song:
-    """
-    Represents a song and its attributes.
-    Required by tests/test_recommender.py
-    """
     id: int
     title: str
     artist: str
@@ -18,56 +14,78 @@ class Song:
     danceability: float
     acousticness: float
 
+    @classmethod
+    def from_dict(cls, d):
+        return cls(
+            id=int(d['id']),
+            title=d['title'],
+            artist=d['artist'],
+            genre=d['genre'],
+            mood=d['mood'],
+            energy=float(d['energy']),
+            tempo_bpm=float(d['tempo_bpm']),
+            valence=float(d['valence']),
+            danceability=float(d['danceability']),
+            acousticness=float(d['acousticness']),
+        )
+
 @dataclass
 class UserProfile:
-    """
-    Represents a user's taste preferences.
-    Required by tests/test_recommender.py
-    """
     favorite_genre: str
     favorite_mood: str
     target_energy: float
-    likes_acoustic: bool
+    target_valence: float
+    target_danceability: float
 
 class Recommender:
-    """
-    OOP implementation of the recommendation logic.
-    Required by tests/test_recommender.py
-    """
-    def __init__(self, songs: List[Song]):
+    def __init__(self, songs, weights):
         self.songs = songs
+        self.weights = weights
 
-    def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
-        # TODO: Implement recommendation logic
-        return self.songs[:k]
+    def calculate_score(self, song, profile):
+        score = 0
 
-    def explain_recommendation(self, user: UserProfile, song: Song) -> str:
-        # TODO: Implement explanation logic
-        return "Explanation placeholder"
+        # Categorical feature scoring
+        if song.genre == profile.favorite_genre:
+            score += self.weights['genre']
+        if song.mood == profile.favorite_mood:
+            score += self.weights['mood']
 
-def load_songs(csv_path: str) -> List[Dict]:
-    """
-    Loads songs from a CSV file.
-    Required by src/main.py
-    """
-    # TODO: Implement CSV loading logic
-    print(f"Loading songs from {csv_path}...")
-    return []
+        # Numerical feature scoring (inverse absolute difference)
+        score += self.calculate_numerical_score(
+            profile.target_energy, song.energy, self.weights['energy']
+        )
+        score += self.calculate_numerical_score(
+            profile.target_valence, song.valence, self.weights['valence']
+        )
+        score += self.calculate_numerical_score(
+            profile.target_danceability, song.danceability, self.weights['danceability']
+        )
+        
+        return score
 
-def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
-    """
-    Scores a single song against user preferences.
-    Required by recommend_songs() and src/main.py
-    """
-    # TODO: Implement scoring logic using your Algorithm Recipe from Phase 2.
-    # Expected return format: (score, reasons)
-    return []
+    def calculate_numerical_score(self, target, value, weight):
+        """Calculates score based on closeness to a target value."""
+        # The +1 in the denominator prevents division by zero and normalizes the score
+        similarity = 1 / (1 + abs(target - value))
+        return similarity * weight
 
-def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """
-    Functional implementation of the recommendation logic.
-    Required by src/main.py
-    """
-    # TODO: Implement scoring and ranking logic
-    # Expected return format: (song_dict, score, explanation)
-    return []
+    def recommend(self, profile, num_recommendations=5):
+        scored_songs = []
+        for song in self.songs:
+            score = self._calculate_score(song, profile)
+            scored_songs.append((song, score))
+        
+        # Sort songs by score in descending order
+        scored_songs.sort(key=lambda x: x[1], reverse=True)
+        
+        # Return the top N recommendations
+        return scored_songs[:num_recommendations]
+
+def load_songs(filename="data/songs.csv"):
+    songs = []
+    with open(filename, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            songs.append(Song.from_dict(row))
+    return songs
