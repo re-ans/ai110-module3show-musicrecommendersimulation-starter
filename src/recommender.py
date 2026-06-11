@@ -16,6 +16,7 @@ class Song:
 
     @classmethod
     def from_dict(cls, d):
+        """Creates a Song object from a dictionary."""
         return cls(
             id=int(d['id']),
             title=d['title'],
@@ -41,8 +42,10 @@ class Recommender:
     def __init__(self, songs, weights):
         self.songs = songs
         self.weights = weights
-
+    
+    # score_song is now calculate_score, and it takes a song and a user profile to compute the score
     def calculate_score(self, song, profile):
+        """Calculates a recommendation score for a single song based on a user profile."""
         score = 0
 
         # Categorical feature scoring
@@ -70,10 +73,12 @@ class Recommender:
         similarity = 1 / (1 + abs(target - value))
         return similarity * weight
 
-    def recommend(self, profile, num_recommendations=5):
+    # recommend_songs is now recommend, and it takes a user profile and the number of recommendations to return
+    def recommend(self, profile, num_recommendations):
+        """Recommends a list of songs to a user based on their profile."""
         scored_songs = []
         for song in self.songs:
-            score = self._calculate_score(song, profile)
+            score = self.calculate_score(song, profile)
             scored_songs.append((song, score))
         
         # Sort songs by score in descending order
@@ -83,6 +88,7 @@ class Recommender:
         return scored_songs[:num_recommendations]
 
 def load_songs(filename="data/songs.csv"):
+    """Loads a list of songs from a CSV file."""
     songs = []
     with open(filename, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)

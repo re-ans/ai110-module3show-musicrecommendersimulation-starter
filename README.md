@@ -41,6 +41,75 @@ This recommender system works by implementing a **content-based filtering** appr
 
 - **Diagram of workflow:**
   ![Workflow Diagram](music_diagram.png)
+
+- **Edge Casess Output:**
+~~~
+--- Test Case 1: Conflicting Vibe (Chill + High Energy) ---
+Genre: lofi, Mood: chill
+Target Vibe: Energy=0.9, Valence=0.8, Danceability=0.8
+
+--- Top 5 Recommendations ---
+
+'Midnight Coding' by LoRoom (Score: 93.30)
+   - Genre: lofi, Mood: chill, Energy: 0.42, Valence: 0.56, Danceability: 0.62
+
+'Library Rain' by Paper Lanterns (Score: 92.98)
+   - Genre: lofi, Mood: chill, Energy: 0.35, Valence: 0.6, Danceability: 0.58
+
+'Rainy Day Notebook' by Paper Lanterns (Score: 92.63)
+   - Genre: lofi, Mood: chill, Energy: 0.33, Valence: 0.55, Danceability: 0.59
+
+'Focus Flow' by LoRoom (Score: 63.26)
+   - Genre: lofi, Mood: focused, Energy: 0.4, Valence: 0.59, Danceability: 0.6
+
+'Study Session' by LoRoom (Score: 63.18)
+   - Genre: lofi, Mood: focused, Energy: 0.38, Valence: 0.58, Danceability: 0.61
+
+
+--- Test Case 2: Niche Genre (Intense Jazz) ---
+Genre: jazz, Mood: intense
+Target Vibe: Energy=0.95, Valence=0.4, Danceability=0.7
+
+--- Top 5 Recommendations ---
+
+'Coffee Shop Stories' by Slow Stereo (Score: 62.58)
+   - Genre: jazz, Mood: relaxed, Energy: 0.37, Valence: 0.71, Danceability: 0.54
+
+'Quiet Morning' by Slow Stereo (Score: 62.24)
+   - Genre: jazz, Mood: relaxed, Energy: 0.31, Valence: 0.68, Danceability: 0.5
+
+'Cyberpunk Dreams' by Voltline (Score: 59.15)
+   - Genre: synthwave, Mood: intense, Energy: 0.88, Valence: 0.4, Danceability: 0.68
+
+'Glitch in the Matrix' by Max Pulse (Score: 59.05)
+   - Genre: electronic, Mood: intense, Energy: 0.95, Valence: 0.35, Danceability: 0.65
+
+'Storm Runner' by Voltline (Score: 58.49)
+   - Genre: rock, Mood: intense, Energy: 0.91, Valence: 0.48, Danceability: 0.66
+
+
+--- Test Case 3: Ambiguous Pop (Neutral Vibe) ---
+Genre: pop, Mood: moody
+Target Vibe: Energy=0.5, Valence=0.5, Danceability=0.5
+
+--- Top 5 Recommendations ---
+
+'Sunrise City' by Neon Echo (Score: 62.79)
+   - Genre: pop, Mood: happy, Energy: 0.82, Valence: 0.84, Danceability: 0.79
+
+'Gym Hero' by Max Pulse (Score: 62.11)
+   - Genre: pop, Mood: intense, Energy: 0.93, Valence: 0.77, Danceability: 0.88
+
+'Summer Anthem' by Neon Echo (Score: 61.85)
+   - Genre: pop, Mood: happy, Energy: 0.89, Valence: 0.88, Danceability: 0.85
+
+'Desert Mirage' by Oasis Beats (Score: 56.05)
+   - Genre: electronic, Mood: moody, Energy: 0.72, Valence: 0.45, Danceability: 0.7
+
+'Night Drive Loop' by Neon Echo (Score: 56.03)
+   - Genre: synthwave, Mood: moody, Energy: 0.75, Valence: 0.49, Danceability: 0.73
+
+~~~
 ---
 
 ## Getting Started
